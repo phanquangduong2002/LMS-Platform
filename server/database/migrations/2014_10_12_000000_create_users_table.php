@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('password');
             $table->string('roles')->default('user');
+            $table->boolean('is_blocked')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('login_at')->nullable();
             $table->timestamp('change_password_at')->nullable();

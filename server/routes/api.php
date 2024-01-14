@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,7 +23,20 @@ Route::group([
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::post('/profile', [AuthController::class, 'profile']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'user'
+], function ($router) {
+    Route::get('', [UserController::class, 'getAllUser'])->middleware('admin');
+    Route::get('/{id}', [UserController::class, 'getUser']);
+    Route::put('/update', [UserController::class, 'updateUser']);
+    Route::delete('/{id}', [UserController::class, 'deleteUser'])->middleware('admin');
+    Route::put('/block/{id}', [UserController::class, 'blockUser'])->middleware('admin');
+    Route::put('/unblock/{id}', [UserController::class, 'unblockUser'])->middleware('admin');
+    Route::put('/update-password', [UserController::class, 'updatePassword']);
 });
