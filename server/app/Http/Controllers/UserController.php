@@ -13,7 +13,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        // $this->middleware('user:api', ['except' => ['']]);
+        $this->middleware('auth:api', ['except' => ['']]);
     }
 
     public function getAllUser()
@@ -42,7 +42,10 @@ class UserController extends Controller
                 'user' => $user
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -75,7 +78,10 @@ class UserController extends Controller
                 'user' => $user
             ], 200);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -93,7 +99,10 @@ class UserController extends Controller
                 'message' => 'User Deleted Successfully'
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -113,7 +122,10 @@ class UserController extends Controller
                 'message' => 'User Blocked Successfully'
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -133,7 +145,10 @@ class UserController extends Controller
                 'message' => 'User Unblocked Successfully'
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -156,12 +171,10 @@ class UserController extends Controller
                 'message' => 'Password updated Successfully'
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => 'Internal server error'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
-    }
-
-
-    private function createPasswordResetToken()
-    {
     }
 }

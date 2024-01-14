@@ -17,6 +17,7 @@ use App\Models\User;
 |
 */
 
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
@@ -26,6 +27,8 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/send-verify-mail/{email}', [AuthController::class, 'sendVerifyMail']);
+    Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 });
 
 Route::group([
