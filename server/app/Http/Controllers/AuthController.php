@@ -26,7 +26,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'forgetPassword']]);
+        $this->middleware('auth', ['except' => ['login', 'register', 'refresh', 'forgetPassword', 'verificationMail']]);
     }
 
     public function login(Request $request)
@@ -128,16 +128,14 @@ class AuthController extends Controller
 
             $token = Str::random(40);
             $domain = URL::to('/');
-            $url = $domain . '/' . $token;
+            $url = $domain . '/verify-mail' . '/' . $token;
 
             $data['url'] = $url;
             $data['email'] = $email;
             $data['title'] = 'Email Verification';
             $data['body'] = 'Please click here to below to verify your mail.';
 
-            Mail::send('verifyMail', ['data' => $data], function ($message) use ($data) {
-                $message->to($data['email'])->subject($data['title']);
-            });
+            Mail::to($email)->send(new SendMail($data));
 
             $user = User::find($user[0]->id);
             $user->remember_token = $token;
@@ -152,6 +150,31 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => 'User is not Authenticated'
             ], 403);
+        }
+    }
+
+    public function verificationMail($token)
+    {
+        try {
+            $user = User::where('remember_token', $token)->get();
+
+            if (!(count($user) > 0)) return view('404');
+
+            $datetime = Carbon::now()->format('Y-m-d H:i:s');
+
+            $user = User::find($user[0]->id);
+
+            $user->remember_token = '';
+            $user->is_verified = 1;
+            $user->email_verified_at = $datetime;
+            $user->save();
+
+            return "<h1>Email verified successfully</h1>";
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
