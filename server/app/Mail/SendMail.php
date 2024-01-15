@@ -13,14 +13,14 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $mailData;
+    public $data;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct($data)
     {
-        $this->mailData = $mailData;
+        $this->data = $data;
     }
 
     /**
@@ -29,7 +29,7 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Mail',
+            subject: 'LMS Platform',
         );
     }
 
@@ -39,7 +39,7 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'forgetPasswordMail',
+            view: 'verifyMail',
         );
     }
 

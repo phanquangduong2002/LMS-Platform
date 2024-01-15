@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('roles')->default('user');
             $table->boolean('is_blocked')->default(false);
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('is_verified')->default(0);
             $table->timestamp('login_at')->nullable();
             $table->timestamp('change_password_at')->nullable();
             $table->rememberToken();
