@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LMS Platform</title>
+    <title>{{$data['title']}}</title>
 </head>
 <body>
-    <h1>{{$mailData['title']}}</h1>
-    <p>{{$mailData['body']}}</p>
-
+    <p>{{$data['body']}}</p>
+    <a href="{{$data['url']}}">
+    <button>Click here to reset password</button>
+    </a>
+    <p>Thank you.</p>
+</a>
 </body>
 </html>

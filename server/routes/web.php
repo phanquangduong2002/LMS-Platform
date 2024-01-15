@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,6 @@ Route::get('/', function () {
 });
 
 Route::get('/verify-mail/{token}', [AuthController::class, 'verificationMail']);
+
+Route::get('/reset-password', [AuthController::class, 'resetPasswordLoad']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);

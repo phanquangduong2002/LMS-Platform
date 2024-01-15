@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgetPasswordMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -13,9 +14,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
-use App\Models\PasswordReset;
+use App\Models\PasswordResetToken;
 use Carbon\Carbon;
-use App\Mail\SendMail;
+use App\Mail\VerifyMail;
 
 class AuthController extends Controller
 {
@@ -26,7 +27,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['login', 'register', 'refresh', 'forgetPassword', 'verificationMail']]);
+        $this->middleware('auth', ['except' => ['login', 'register', 'refresh', 'verificationMail', 'forgetPassword', 'resetPasswordLoad', 'resetPassword']]);
     }
 
     public function login(Request $request)
@@ -135,7 +136,7 @@ class AuthController extends Controller
             $data['title'] = 'Email Verification';
             $data['body'] = 'Please click here to below to verify your mail.';
 
-            Mail::to($email)->send(new SendMail($data));
+            Mail::to($email)->send(new VerifyMail($data));
 
             $user = User::find($user[0]->id);
             $user->remember_token = $token;
@@ -180,70 +181,67 @@ class AuthController extends Controller
 
     public function forgetPassword(Request $request)
     {
-        // try {
-        //     $user =  User::where('email', $request->email)->get();
-
-        //     if (count($user) > 0) {
-
-        //         $token = Str::random(40);
-        //         $domain = URL::to('/');
-        //         $url = $domain . '/reset-password?token=' . $token;
-
-        //         $data['url'] = $url;
-        //         $data['email'] = $request['email'];
-        //         $data['title'] = "Password Reset";
-        //         $data['body'] = "Please click on below link to reset your password.";
-
-        //         Mail::send('forgetPasswordMail', ['data' => $data], function ($message) use ($data) {
-        //             $message->to($data['email'])->subject($data['title']);
-        //         });
-
-        //         $datetime = Carbon::now()->format('Y-m-d H:i:s');
-
-        //         PasswordReset::updateOrCreate(
-        //             ['email' => $request->email],
-        //             [
-        //                 'email' => $request->email,
-        //                 'token' => $token,
-        //                 'created_at' => $datetime
-        //             ]
-        //         );
-
-        //         return response()->json([
-        //             'status' => true,
-        //             'message' => 'Please check your mail to reset your password'
-        //         ], 200);
-        //     } else {
-        //         return response()->json([
-        //             'status' => false,
-        //             'message' => 'User not found'
-        //         ], 404);
-        //     }
-        // } catch (Exception $e) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => $e->getMessage()
-        //     ], 500);
-        // }
-
         try {
-            $mailData = [
-                'title' => 'Mail from LMS Platform',
-                'body' => 'Please click on below link to reset your password.'
-            ];
+            $user =  User::where('email', $request->email)->get();
 
-            Mail::to('phanquangduong2002@gmail.com')->send(new SendMail($mailData));
+            if (count($user) > 0) {
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Please check your mail to reset your password'
-            ], 200);
+                $token = Str::random(40);
+                $domain = URL::to('/');
+                $url = $domain . '/reset-password?token=' . $token;
+
+                $data['url'] = $url;
+                $data['email'] = $request['email'];
+                $data['title'] = "Password Reset";
+                $data['body'] = "Please click on below link to reset your password.";
+
+                Mail::to($request->email)->send(new ForgetPasswordMail($data));
+
+                $datetime = Carbon::now()->format('Y-m-d H:i:s');
+
+                PasswordResetToken::updateOrCreate(
+                    ['email' => $request->email],
+                    [
+                        'email' => $request->email,
+                        'token' => $token,
+                        'created_at' => $datetime
+                    ]
+                );
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Please check your mail to reset your password'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function resetPasswordLoad(Request $request)
+    {
+        $token = $request->token;
+
+        $resetData = PasswordResetToken::where('token', $token)->get();
+
+        if (isset($token) && count($resetData) > 0) {
+            $user = User::where('email', $resetData[0]['email'])->get();
+            return view('resetPassword', compact('user'));
+        } else {
+            return view('404');
+        }
+    }
+
+    public function resetPassword()
+    {
     }
 
     private function createNewToken($token, $refreshToken)
