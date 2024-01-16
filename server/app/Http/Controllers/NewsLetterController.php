@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NewsLetter as ModelsNewsLetter;
+use App\Models\NewsLetter;
 use Exception;
 use Illuminate\Http\Request;
 
-class NewsLetter extends Controller
+class NewsLetterController extends Controller
 {
     public function __construct()
     {
@@ -20,7 +20,7 @@ class NewsLetter extends Controller
                 'email' => 'required'
             ]);
 
-            $newEmail = ModelsNewsLetter::updateOrCreate($request->all());
+            $newEmail = NewsLetter::updateOrCreate($request->all());
 
             return response()->json([
                 'success' => true,
@@ -38,7 +38,7 @@ class NewsLetter extends Controller
     {
         try {
 
-            $deleteEmail  = ModelsNewsLetter::find($id)->delete();
+            $deleteEmail  = NewsLetter::find($id)->delete();
 
             return response()->json([
                 'success' => true,

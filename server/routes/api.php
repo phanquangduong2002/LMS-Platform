@@ -3,10 +3,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\NewsLetter;
-use App\Http\Controllers\TutCategory;
+use App\Http\Controllers\NewsLetterController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TutCategoryController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Tutorial;
+use App\Http\Controllers\TutorialController;
+use App\Http\Controllers\VideoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,28 +53,46 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'tutorial/category'
 ], function ($router) {
-    Route::get('/', [TutCategory::class, 'getAllTutCategories']);
-    Route::get('/{id}', [TutCategory::class, 'getATutCat'])->middleware('admin');
-    Route::post('/', [TutCategory::class, 'postTutorialCategory'])->middleware('admin');
-    Route::put('/{id}', [TutCategory::class, 'editATutCat'])->middleware('admin');
-    Route::delete('/{id}', [TutCategory::class, 'deleteATutCat'])->middleware('admin');
+    Route::get('/', [TutCategoryController::class, 'getAllTutCategories']);
+    Route::get('/{id}', [TutCategoryController::class, 'getATutCat'])->middleware('admin');
+    Route::post('/', [TutCategoryController::class, 'postTutorialCategory'])->middleware('admin');
+    Route::put('/{id}', [TutCategoryController::class, 'editATutCat'])->middleware('admin');
+    Route::delete('/{id}', [TutCategoryController::class, 'deleteATutCat'])->middleware('admin');
 });
 
 Route::group([
     'middleware' => 'api',
     'prefix' => 'tutorial'
 ], function ($router) {
-    Route::get('/', [Tutorial::class, 'getAllTutorial']);
-    Route::get('/{tutCatId}/{slug}', [Tutorial::class, 'getATutorial']);
-    Route::post('/', [Tutorial::class, 'postTutorial'])->middleware('admin');
-    Route::put('/{id}', [Tutorial::class, 'updateTutorial'])->middleware('admin');
-    Route::delete('/{id}', [Tutorial::class, 'deleteTutorial'])->middleware('admin');
+    Route::get('/', [TutorialController::class, 'getAllTutorial']);
+    Route::get('/{tutCatId}/{slug}', [TutorialController::class, 'getATutorial']);
+    Route::post('/', [TutorialController::class, 'postTutorial'])->middleware('admin');
+    Route::put('/{id}', [TutorialController::class, 'updateTutorial'])->middleware('admin');
+    Route::delete('/{id}', [TutorialController::class, 'deleteTutorial'])->middleware('admin');
 });
 
 Route::group([
     'middleware' => 'api',
     'prefix' => 'newsletter'
 ], function ($router) {
-    Route::post('/', [NewsLetter::class, 'subscribe']);
-    Route::delete('/{id}', [NewsLetter::class, 'unsubscribe']);
+    Route::post('/', [NewsLetterController::class, 'subscribe']);
+    Route::delete('/{id}', [NewsLetterController::class, 'unsubscribe']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'review'
+], function ($router) {
+    Route::get('/', [ReviewController::class, 'getAllReview']);
+    Route::post('/', [ReviewController::class, 'createReview']);
+    Route::get('/{id}', [ReviewController::class, 'getAReview'])->middleware('admin');
+    Route::put('/{id}', [ReviewController::class, 'updateReviewStatus'])->middleware('admin');
+    Route::delete('/{id}', [ReviewController::class, 'deleteAReview'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'video'
+], function ($router) {
+    Route::post('/', [VideoController::class, 'postVideo'])->middleware('admin');
 });

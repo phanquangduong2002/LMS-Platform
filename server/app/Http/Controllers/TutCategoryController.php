@@ -7,7 +7,7 @@ use App\Models\TutorialCategory;
 use Exception;
 use Illuminate\Http\Request;
 
-class TutCategory extends Controller
+class TutCategoryController extends Controller
 {
     public function __construct()
     {

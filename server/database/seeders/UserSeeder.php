@@ -18,10 +18,18 @@ class UserSeeder extends Seeder
             [
                 "username" => "admin",
                 "user_image" => "avatar.img",
-                "name" => "phan quang duong",
+                "name" => "Quang Dương",
                 "email" => "quangduongsayhi@gmail.com",
                 "password" => Hash::make("12345"),
                 "roles" => "admin",
+            ],
+            [
+                "username" => "bachduong",
+                "user_image" => "avatar.img",
+                "name" => "Bạch Dương",
+                "email" => "bachduong@gmail.com",
+                "password" => Hash::make("12345"),
+                "roles" => "user",
             ]
         ]);
     }
