@@ -27,7 +27,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['login', 'register', 'refresh', 'verificationMail', 'forgetPassword', 'resetPasswordLoad', 'resetPassword']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'verificationMail', 'forgetPassword', 'resetPasswordLoad', 'resetPassword']]);
     }
 
     public function login(Request $request)
@@ -240,8 +240,22 @@ class AuthController extends Controller
         }
     }
 
-    public function resetPassword()
+    public function resetPassword(Request $request)
     {
+        $request->validate([
+            'password' => 'required|confirmed',
+        ]);
+
+        $datetime = Carbon::now()->format('Y-m-d H:i:s');
+
+        $user = User::find($request->id);
+        $user->password = Hash::make($request->password);
+        $user->change_password_at = $datetime;
+        $user->save();
+
+        PasswordResetToken::where('email', $user->email)->delete();
+
+        return "<h1>Your password has been reset successfully.</h1>";
     }
 
     private function createNewToken($token, $refreshToken)

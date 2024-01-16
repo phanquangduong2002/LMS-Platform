@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['']]);
+        $this->middleware('auth:api', ['except' => ['']]);
     }
 
     public function getAllUser()
@@ -159,12 +160,15 @@ class UserController extends Controller
                 "password" => "required|confirmed",
             ]);
 
+            $datetime = Carbon::now()->format('Y-m-d H:i:s');
+
             $id = Auth::user()->id;
 
-            User::find($id)->update([
-                "password" => Hash::make($request["password"]),
-                "change_password_at" => NOW()
-            ]);
+            $user = User::find($id);
+
+            $user->password  = Hash::make($request['password']);
+            $user->change_password_at = $datetime;
+            $user->save();
 
             return response()->json([
                 'status' => true,
