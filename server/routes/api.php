@@ -94,5 +94,9 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'video'
 ], function ($router) {
+    Route::get('/', [VideoController::class, 'getAllVideos']);
     Route::post('/', [VideoController::class, 'postVideo'])->middleware('admin');
+    Route::get('/{slug}', [VideoController::class, 'getVideo']);
+    Route::put('/{id}', [VideoController::class, 'updateVideo'])->middleware('admin');
+    Route::delete('/{id}', [VideoController::class, 'deleteVideo'])->middleware('admin');
 });
