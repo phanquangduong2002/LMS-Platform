@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NewsLetter;
 use App\Http\Controllers\TutCategory;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Tutorial;
@@ -66,4 +67,12 @@ Route::group([
     Route::post('/', [Tutorial::class, 'postTutorial'])->middleware('admin');
     Route::put('/{id}', [Tutorial::class, 'updateTutorial'])->middleware('admin');
     Route::delete('/{id}', [Tutorial::class, 'deleteTutorial'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'newsletter'
+], function ($router) {
+    Route::post('/', [NewsLetter::class, 'subscribe']);
+    Route::delete('/{id}', [NewsLetter::class, 'unsubscribe']);
 });

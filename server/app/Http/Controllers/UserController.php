@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         $users = User::all();
         return response()->json([
-            "status" => true,
+            "success" => true,
             "message" => "All Users Fetched Successfully",
             "users" => $users
         ], 200);
@@ -34,17 +34,17 @@ class UserController extends Controller
             $user = User::find($id);
 
             if (!$user) {
-                return response()->json(['status' => false, 'error' => 'User not found'], 404);
+                return response()->json(['success' => false, 'error' => 'User not found'], 404);
             }
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => "Get User Successfully",
                 'user' => $user
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -65,7 +65,7 @@ class UserController extends Controller
             $user = User::find($id);
 
             if (!$user) {
-                return response()->json(['status' => false, 'error' => 'User not found'], 404);
+                return response()->json(['success' => false, 'error' => 'User not found'], 404);
             }
 
             $user->username = $request['username'];
@@ -74,13 +74,13 @@ class UserController extends Controller
             $user->user_image = $request->filled('user_image') ? $request->user_image : $user->user_image;
             $user->save();
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Profile Updated Successfully',
                 'user' => $user
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -91,17 +91,17 @@ class UserController extends Controller
         try {
             $user = User::find($id);
 
-            if (!$user) return response()->json(['status' => false, 'error' => 'User not found'], 404);
+            if (!$user) return response()->json(['success' => false, 'error' => 'User not found'], 404);
 
             $user->delete();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'User Deleted Successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -112,19 +112,19 @@ class UserController extends Controller
         try {
             $user = User::find($id);
 
-            if (!$user) return response()->json(['status' => false, 'error' => 'User not found'], 404);
+            if (!$user) return response()->json(['success' => false, 'error' => 'User not found'], 404);
 
             $user->is_blocked = true;
 
             $user->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'User Blocked Successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -135,19 +135,19 @@ class UserController extends Controller
         try {
             $user = User::find($id);
 
-            if (!$user) return response()->json(['status' => false, 'error' => 'User not found'], 404);
+            if (!$user) return response()->json(['success' => false, 'error' => 'User not found'], 404);
 
             $user->is_blocked = false;
 
             $user->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'User Unblocked Successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -171,12 +171,12 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Password updated Successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }

@@ -25,12 +25,12 @@ class TutCategory extends Controller
             $tutCategory = TutorialCategory::create($request->all());
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial Category created successfully',
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -42,13 +42,13 @@ class TutCategory extends Controller
             $tutCategories = TutorialCategory::all();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial Categories Fetched Successfully',
                 'tutCategories' => $tutCategories
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -60,18 +60,18 @@ class TutCategory extends Controller
             $tutCategory = TutorialCategory::find($id);
 
             if (!$tutCategory) return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Tutorial Category Not Found'
             ], 404);
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial Category Found',
                 'tutCategory' => $tutCategory
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -87,7 +87,7 @@ class TutCategory extends Controller
             $tutCategory = TutorialCategory::find($id);
 
             if (!$tutCategory) return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Tutorial Category Not Found'
             ], 404);
 
@@ -96,12 +96,12 @@ class TutCategory extends Controller
             $tutCategory->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial Category Edited Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -113,7 +113,7 @@ class TutCategory extends Controller
             $tutCategory = TutorialCategory::find($id);
 
             if (!$tutCategory) return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Tutorial Category Not Found'
             ], 404);
 
@@ -127,12 +127,12 @@ class TutCategory extends Controller
 
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial Category Deleted Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }

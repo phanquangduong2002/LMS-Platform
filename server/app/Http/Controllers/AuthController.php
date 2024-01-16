@@ -40,7 +40,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
         if (!$token = Auth::attempt($validator->validated())) {
-            return response()->json(['status' => false, 'error' => 'Wrong account or password'], 401);
+            return response()->json(['success' => false, 'error' => 'Wrong account or password'], 401);
         }
 
 
@@ -58,7 +58,7 @@ class AuthController extends Controller
             'password' => 'required|confirmed',
         ]);
         if ($validator->fails()) {
-            return response()->json(['status' => false, 'error' => $validator->errors()->toJson()], 400);
+            return response()->json(['success' => false, 'error' => $validator->errors()->toJson()], 400);
         }
         $user = User::create(array_merge(
             $validator->validated(),
@@ -70,7 +70,7 @@ class AuthController extends Controller
         // return $this->createNewToken($token);
 
         return response()->json([
-            "status" => true,
+            "success" => true,
             "message" => "New account created successfully",
             "user" => $user
         ], 201);
@@ -82,7 +82,7 @@ class AuthController extends Controller
         try {
             return response()->json(Auth::user());
         } catch (JWTException $e) {
-            return response()->json(['status' => false, 'error' => 'Unauthorized'], 401);
+            return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
         }
     }
 
@@ -90,10 +90,10 @@ class AuthController extends Controller
     {
         try {
             Auth::logout();
-            return response()->json(['status' => true, 'message' => 'User successfully signed out']);
+            return response()->json(['success' => true, 'message' => 'User successfully signed out']);
         } catch (Exception $e) {
 
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -105,7 +105,7 @@ class AuthController extends Controller
 
             $user = User::find($decoded['sub']);
 
-            if (!$user) return response()->json(['status' => false, 'error' => 'User not found', 404]);
+            if (!$user) return response()->json(['success' => false, 'error' => 'User not found', 404]);
 
             Auth::invalidate(); // Vô hiệu hóa token hiện tại
 
@@ -114,7 +114,7 @@ class AuthController extends Controller
 
             return $this->createNewToken($token, $refreshToken);
         } catch (JWTException $e) {
-            return response()->json(['status' => false, 'error' => 'Refresh token Invalid'], 500);
+            return response()->json(['success' => false, 'error' => 'Refresh token Invalid'], 500);
         }
     }
 
@@ -123,7 +123,7 @@ class AuthController extends Controller
         if (auth()->user()) {
             $user = User::where('email', $email)->get();
             if (count($user) == 0) return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'User not found'
             ], 404);
 
@@ -143,12 +143,12 @@ class AuthController extends Controller
             $user->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Mail sent successfully'
             ], 200);
         } else {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'User is not Authenticated'
             ], 403);
         }
@@ -173,7 +173,7 @@ class AuthController extends Controller
             return "<h1>Email verified successfully</h1>";
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -209,18 +209,18 @@ class AuthController extends Controller
                 );
 
                 return response()->json([
-                    'status' => true,
+                    'success' => true,
                     'message' => 'Please check your mail to reset your password'
                 ], 200);
             } else {
                 return response()->json([
-                    'status' => false,
+                    'success' => false,
                     'message' => 'User not found'
                 ], 404);
             }
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -261,7 +261,7 @@ class AuthController extends Controller
     private function createNewToken($token, $refreshToken)
     {
         return response()->json([
-            'status' => true,
+            'success' => true,
             'access_token' => $token,
             'refresh_token' => $refreshToken,
             'token_type' => 'bearer',

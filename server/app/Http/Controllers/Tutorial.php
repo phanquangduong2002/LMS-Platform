@@ -35,13 +35,13 @@ class Tutorial extends Controller
             }
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial created successfully',
                 'tutorial' => $tutorial
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -53,13 +53,13 @@ class Tutorial extends Controller
             $tutorials = ModelsTutorial::paginate();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'All Tutorial Fetched Successfully',
                 'tutorials' => $tutorials
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -76,7 +76,7 @@ class Tutorial extends Controller
 
             if (!$tutorial)
                 return response()->json([
-                    'status' => false,
+                    'success' => false,
                     'message' => 'Tutorial not found'
                 ], 404);
 
@@ -87,14 +87,14 @@ class Tutorial extends Controller
                 ->get();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial found successfully',
                 'tutorial' => $tutorial,
                 'tutorialTopics' => $tutorialTopics
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -114,7 +114,7 @@ class Tutorial extends Controller
 
             if (!$tutorial)
                 return response()->json([
-                    'status' => false,
+                    'success' => false,
                     'message' => 'Tutorial not found'
                 ], 404);
 
@@ -125,12 +125,12 @@ class Tutorial extends Controller
             $tutorial->save();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial updated Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -144,7 +144,7 @@ class Tutorial extends Controller
 
             if (!$tutorial)
                 return response()->json([
-                    'status' => false,
+                    'success' => false,
                     'message' => 'Tutorial not found'
                 ], 404);
 
@@ -152,12 +152,12 @@ class Tutorial extends Controller
             $tutorial->delete();
 
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'Tutorial deleted Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
