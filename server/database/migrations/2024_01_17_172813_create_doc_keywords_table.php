@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documentations', function (Blueprint $table) {
+        Schema::create('doc_keywords', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->string('author')->default('Admin');
-            $table->longText('content');
+            $table->foreignId('doc_id')->constrained('documentations');
+            $table->string('keyword');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documentations');
+        Schema::dropIfExists('doc_keywords');
     }
 };

@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TutCategoryController;
@@ -99,4 +100,11 @@ Route::group([
     Route::get('/{slug}', [VideoController::class, 'getVideo']);
     Route::post('/{id}', [VideoController::class, 'updateVideo'])->middleware('admin');
     Route::delete('/{id}', [VideoController::class, 'deleteVideo'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'document'
+], function ($router) {
+    Route::post('/', [DocController::class, 'postDocument'])->middleware('admin');
 });

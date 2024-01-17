@@ -133,7 +133,7 @@ class VideoController extends Controller
             $video->description = $request['description'];
 
 
-            if ($request->filled('video')) {
+            if ($request->hasFile('video')) {
                 // $video_url = cloudinary()->uploadVideo($request->file('video')->getRealPath(), [
                 //     'folder' => 'lms-cdn-videos',
                 // ])->getSecurePath();

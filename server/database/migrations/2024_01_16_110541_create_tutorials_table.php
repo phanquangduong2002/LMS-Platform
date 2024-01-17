@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tutorials', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
-            $table->string('slug')->unique();
+            $table->string('title');
+            $table->string('slug');
             $table->foreignId('tutorial_category_id')->constrained('tutorial_categories');
             $table->longText('content');
             $table->timestamps();

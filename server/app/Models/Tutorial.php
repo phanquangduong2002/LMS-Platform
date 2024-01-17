@@ -33,10 +33,10 @@ class Tutorial extends Model
         return $this->hasMany(TutorialKeyword::class, 'tutorial_id');
     }
 
-    // public function getKeywordsAttribute()
-    // {
-    //     return $this->keywords()->pluck('keyword')->toArray();
-    // }
+    public function images()
+    {
+        return $this->hasMany(TutorialImage::class, 'tutorial_id');
+    }
 
     public function category()
     {

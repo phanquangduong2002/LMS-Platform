@@ -18,7 +18,7 @@ class TutorialController extends Controller
     {
         try {
             $request->validate([
-                'title' => 'required|unique:tutorials',
+                'title' => 'required',
                 'tutorial_category_id' => 'required',
                 'content' => 'required',
                 'keywords' => 'array|required|array|min:1',
@@ -68,16 +68,16 @@ class TutorialController extends Controller
     public function getATutorial($tutCatId, $slug)
     {
         try {
-            $tutorial = Tutorial::where('tutorials.slug', $slug)
+            $tutorials = Tutorial::where('tutorials.slug', $slug)
                 ->where('tutorials.tutorial_category_id', $tutCatId)
                 ->join('tutorial_categories', 'tutorials.tutorial_category_id', '=', 'tutorial_categories.id')
                 ->select('tutorials.*', 'tutorial_categories.title as tutorial_category_title', 'tutorial_categories.slug as tutorial_category_slug')
-                ->first();
+                ->get();
 
-            if (!$tutorial)
+            if (count($tutorials) == 0)
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tutorial not found'
+                    'message' => 'Tutorials not found'
                 ], 404);
 
             $tutorialTopics = Tutorial::where('tutorials.tutorial_category_id', $tutCatId)
@@ -89,7 +89,7 @@ class TutorialController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Tutorial found successfully',
-                'tutorial' => $tutorial,
+                'tutorial' => $tutorials,
                 'tutorialTopics' => $tutorialTopics
             ], 200);
         } catch (Exception $e) {
@@ -105,7 +105,7 @@ class TutorialController extends Controller
     {
         try {
             $request->validate([
-                'title' => 'required|unique:tutorials,title,' . $id,
+                'title' => 'required|',
                 'tutorial_category_id' => 'required',
                 'content' => 'required',
             ]);
