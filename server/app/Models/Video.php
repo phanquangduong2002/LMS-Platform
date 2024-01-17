@@ -28,4 +28,9 @@ class Video extends Model
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
     }
+
+    public function keywords()
+    {
+        return $this->hasMany(VideoKeyword::class, 'video_id');
+    }
 }

@@ -6,6 +6,8 @@ use App\Models\Video;
 use App\Models\VideoKeyword;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class VideoController extends Controller
 {
@@ -19,14 +21,32 @@ class VideoController extends Controller
         try {
             $request->validate([
                 'title' => 'required',
-                'thumbnail' => 'required',
+                // 'video' => 'required|mimes:mp4,mov,ogg,qt|max:102400',
+                'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required',
-                'video_url' => 'required',
                 'keywords' => 'array|required|array|min:1',
                 'keywords.*' => 'required|string',
             ]);
 
-            $video = Video::create($request->all());
+
+            $thumbnail = cloudinary()->upload($request->file('thumbnail')->getRealPath(), [
+                'folder' => 'lms-cdn-images',
+            ])->getSecurePath();
+
+            // $video_url = cloudinary()->uploadVideo($request->file('video')->getRealPath(), [
+            //     'folder' => 'lms-cdn-videos',
+            // ])->getSecurePath();
+
+            $video = new Video();
+
+            // $video->video_url = $video_url;
+
+            $video->video_url = 'video.mp4';
+            $video->title = $request['title'];
+            $video->thumbnail = $thumbnail;
+            $video->description = $request['description'];
+
+            $video->save();
 
             foreach ($request->input('keywords') as $keyword) {
                 VideoKeyword::create([
@@ -37,7 +57,8 @@ class VideoController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Video Posted Successfully'
+                'message' => 'Video Posted Successfully',
+                'video' => $video,
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -92,13 +113,13 @@ class VideoController extends Controller
     public function updateVideo(Request $request, $id)
     {
         try {
+
             $request->validate([
                 'title' => 'required',
-                'thumbnail' => 'required',
+                // 'video' => 'required|mimes:mp4,mov,ogg,qt|max:102400',
+                'thumbnail' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required',
-                'video_url' => 'required',
             ]);
-
 
             $video = Video::find($id);
 
@@ -109,9 +130,36 @@ class VideoController extends Controller
                 ], 404);
 
             $video->title = $request['title'];
-            $video->thumbnail = $request['thumbnail'];
             $video->description = $request['description'];
-            $video->video_url = $request['video_url'];
+
+
+            if ($request->filled('video')) {
+                // $video_url = cloudinary()->uploadVideo($request->file('video')->getRealPath(), [
+                //     'folder' => 'lms-cdn-videos',
+                // ])->getSecurePath();
+
+                // $video->video_url = $video_url;
+
+                $video->video_url = 'video.mp4';
+            }
+
+
+            if ($request->hasFile('thumbnail')) {
+
+                // Lấy public_id từ URL hiện tại trong cơ sở dữ liệu
+
+                $thumbnail_url = $video->thumbnail;
+                $filename = pathinfo($thumbnail_url)['filename'];
+                $public_id = 'lms-cdn-images/' . $filename;
+
+                cloudinary()->destroy($public_id);
+
+                $thumbnail = cloudinary()->upload($request->file('thumbnail')->getRealPath(), [
+                    'folder' => 'lms-cdn-images',
+                ])->getSecurePath();
+
+                $video->thumbnail = $thumbnail;
+            }
 
             $video->save();
 
@@ -137,6 +185,13 @@ class VideoController extends Controller
                     'success' => false,
                     'message' => 'Video not found'
                 ], 404);
+
+            $video->keywords()->delete();
+
+            $thumbnail_url = $video->thumbnail;
+            $filename = pathinfo($thumbnail_url)['filename'];
+            $public_id = 'lms-cdn-images/' . $filename;
+            cloudinary()->destroy($public_id);
 
             $video->delete();
 
