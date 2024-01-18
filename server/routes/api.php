@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\DocController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\ReviewController;
@@ -118,7 +119,7 @@ Route::group([
     Route::get('/', [BlogCategoryController::class, 'getAllBlogCategories']);
     Route::get('/{id}', [BlogCategoryController::class, 'getABlogCat'])->middleware('admin');
     Route::post('/', [BlogCategoryController::class, 'postBlogCategory'])->middleware('admin');
-    Route::put('/{id}', [BlogCategoryController::class, 'editAblogCat'])->middleware('admin');
+    Route::put('/{id}', [BlogCategoryController::class, 'editABlogCat'])->middleware('admin');
     Route::delete('/{id}', [BlogCategoryController::class, 'deleteABlogCat'])->middleware('admin');
 });
 
@@ -131,4 +132,26 @@ Route::group([
     Route::post('/', [BlogController::class, 'postBlog'])->middleware('admin');
     Route::put('/{id}', [BlogController::class, 'updateBlog'])->middleware('admin');
     Route::delete('/{id}', [BlogController::class, 'deleteBlog'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'course/category'
+], function ($router) {
+    Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
+    Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
+    Route::post('/', [CourseCategoryController::class, 'postCourseCategory'])->middleware('roles');
+    Route::put('/{id}', [CourseCategoryController::class, 'editACourseCat'])->middleware('roles');
+    Route::delete('/{id}', [CourseCategoryController::class, 'deleteACourseCat'])->middleware('roles');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'course'
+], function ($router) {
+    Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
+    Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
+    Route::post('/', [CourseCategoryController::class, 'postCourseCategory'])->middleware('roles');
+    Route::put('/{id}', [CourseCategoryController::class, 'editACourseCat'])->middleware('roles');
+    Route::delete('/{id}', [CourseCategoryController::class, 'deleteACourseCat'])->middleware('roles');
 });

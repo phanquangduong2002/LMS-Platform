@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
-use App\Models\BlogCategory;
+use App\Models\CourseCategory;
 use Exception;
 use Illuminate\Http\Request;
 
-class BlogCategoryController extends Controller
+class CourseCategoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['getAllBlogCategories']]);
+        $this->middleware('auth:api', ['except' => ['getAllCourseCategories']]);
     }
 
-    public function postBlogCategory(Request $request)
+    public function postCourseCategory(Request $request)
     {
         try {
 
             $request->validate([
-                'title' => 'required|unique:blog_categories'
+                'title' => 'required|unique:tutorial_categories'
             ]);
 
-            $blogCategory = BlogCategory::create($request->all());
+            $courseCategory = CourseCategory::create($request->all());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Blog Category created successfully',
+                'message' => 'Course Category created successfully',
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -36,15 +35,15 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function getAllBlogCategories()
+    public function getAllCourseCategories()
     {
         try {
-            $blogCategories = BlogCategory::all();
+            $courseCategories = CourseCategory::all();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Blog Categories Fetched Successfully',
-                'blogCategories' => $blogCategories
+                'message' => 'Course Categories Fetched Successfully',
+                'courseCategories' => $courseCategories
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -54,20 +53,20 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function getABlogCat($id)
+    public function getACourseCat($id)
     {
         try {
-            $blogCategory = BlogCategory::find($id);
+            $courseCategory = CourseCategory::find($id);
 
-            if (!$blogCategory) return response()->json([
+            if (!$courseCategory) return response()->json([
                 'success' => false,
-                'message' => 'Blog Category Not Found'
+                'message' => 'Course Category Not Found'
             ], 404);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Tutorial Category Found',
-                'tutCategory' => $blogCategory
+                'courseCategory' => $courseCategory
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -77,25 +76,25 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function editABlogCat(Request $request, $id)
+    public function editACourseCat(Request $request, $id)
     {
         try {
             $request->validate([
-                'title' => 'required|unique:blog_categories,title,' . $id,
+                'title' => 'required|unique:course_categories,title,' . $id,
             ]);
-            $blogCategory = BlogCategory::find($id);
+            $courseCategory = CourseCategory::find($id);
 
-            if (!$blogCategory) return response()->json([
+            if (!$courseCategory) return response()->json([
                 'success' => false,
-                'message' => 'Blog Category Not Found'
+                'message' => 'Course Category Not Found'
             ], 404);
 
-            $blogCategory->title = $request['title'];
-            $blogCategory->save();
+            $courseCategory->title = $request['title'];
+            $courseCategory->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Blog Category Edited Successfully'
+                'message' => 'Course Category Edited Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -105,27 +104,27 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function deleteABlogCat($id)
+    public function deleteACourseCat($id)
     {
         try {
-            $blogCategory = BlogCategory::find($id);
+            $courseCategory = CourseCategory::find($id);
 
-            if (!$blogCategory) return response()->json([
+            if (!$courseCategory) return response()->json([
                 'success' => false,
-                'message' => 'Blog Category Not Found'
+                'message' => 'Course Category Not Found'
             ], 404);
 
-            $blogsToDelete = Blog::where('blog_category_id', $id)->get();
-            foreach ($blogsToDelete as $blog) {
-                $blog->keywords()->delete();
-                $blog->delete();
-            }
+            // $logsToDelete = Blog::where('blog_category_id', $id)->get();
+            // foreach ($logsToDelete as $blog) {
+            //     $blog->keywords()->delete();
+            //     $blog->delete();
+            // }
 
-            $blogCategory->delete();
+            $courseCategory->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Blog Category Deleted Successfully'
+                'message' => 'Course Category Deleted Successfully'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
