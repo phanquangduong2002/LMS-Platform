@@ -3,6 +3,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DocController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\ReviewController;
@@ -107,4 +109,26 @@ Route::group([
     'prefix' => 'document'
 ], function ($router) {
     Route::post('/', [DocController::class, 'postDocument'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'blog/category'
+], function ($router) {
+    Route::get('/', [BlogCategoryController::class, 'getAllBlogCategories']);
+    Route::get('/{id}', [BlogCategoryController::class, 'getABlogCat'])->middleware('admin');
+    Route::post('/', [BlogCategoryController::class, 'postBlogCategory'])->middleware('admin');
+    Route::put('/{id}', [BlogCategoryController::class, 'editAblogCat'])->middleware('admin');
+    Route::delete('/{id}', [BlogCategoryController::class, 'deleteABlogCat'])->middleware('admin');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'blog'
+], function ($router) {
+    Route::get('/', [BlogController::class, 'getAllBlog']);
+    Route::get('/{blogCatId}/{slug}', [BlogController::class, 'getABlog']);
+    Route::post('/', [BlogController::class, 'postBlog'])->middleware('admin');
+    Route::put('/{id}', [BlogController::class, 'updateBlog'])->middleware('admin');
+    Route::delete('/{id}', [BlogController::class, 'deleteBlog'])->middleware('admin');
 });
