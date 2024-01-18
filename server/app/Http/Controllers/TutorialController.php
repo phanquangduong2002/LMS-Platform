@@ -68,13 +68,13 @@ class TutorialController extends Controller
     public function getATutorial($tutCatId, $slug)
     {
         try {
-            $tutorials = Tutorial::where('tutorials.slug', $slug)
+            $tutorial = Tutorial::where('tutorials.slug', $slug)
                 ->where('tutorials.tutorial_category_id', $tutCatId)
                 ->join('tutorial_categories', 'tutorials.tutorial_category_id', '=', 'tutorial_categories.id')
                 ->select('tutorials.*', 'tutorial_categories.title as tutorial_category_title', 'tutorial_categories.slug as tutorial_category_slug')
-                ->get();
+                ->first();
 
-            if (count($tutorials) == 0)
+            if (!$tutorial)
                 return response()->json([
                     'success' => false,
                     'message' => 'Tutorials not found'
@@ -89,7 +89,7 @@ class TutorialController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Tutorial found successfully',
-                'tutorial' => $tutorials,
+                'tutorial' => $tutorial,
                 'tutorialTopics' => $tutorialTopics
             ], 200);
         } catch (Exception $e) {

@@ -67,16 +67,16 @@ class BlogController extends Controller
     public function getABlog($blogCatId, $slug)
     {
         try {
-            $blogs = Blog::where('blogs.slug', $slug)
+            $blog = Blog::where('blogs.slug', $slug)
                 ->where('blogs.blog_category_id', $blogCatId)
                 ->join('blog_categories', 'blogs.blog_category_id', '=', 'blog_categories.id')
                 ->select('blogs.*', 'blog_categories.title as blog_category_title', 'blog_categories.slug as blog_category_slug')
-                ->get();
+                ->first();
 
-            if (count($blogs) == 0)
+            if (!$blog)
                 return response()->json([
                     'success' => false,
-                    'message' => 'Blogs not found'
+                    'message' => 'Blog not found'
                 ], 404);
 
             $blogTopics = Blog::where('blogs.blog_category_id', $blogCatId)
@@ -88,7 +88,7 @@ class BlogController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Blog found successfully',
-                'blogs' => $blogs,
+                'blog' => $blog,
                 'blogTopics' => $blogTopics
             ], 200);
         } catch (Exception $e) {

@@ -150,5 +150,7 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'course'
 ], function ($router) {
+    Route::get('/', [CourseController::class, 'getAllCourses']);
     Route::post('/', [CourseController::class, 'createCourse'])->middleware('roles');
+    Route::get('/{courseCatId}/{slug}', [CourseController::class, 'getACourse']);
 });
