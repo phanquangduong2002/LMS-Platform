@@ -63,16 +63,17 @@ class CourseController extends Controller
         }
     }
 
-    public function getAllCourses()
+    public function getAllCourses($courseCatId)
     {
         try {
-            $courses = Course::join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
+            $courses = Course::where('courses.course_category_id', $courseCatId)
+                ->join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
                 ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
                 ->paginate();
 
             return response()->json([
                 'success' => true,
-                'message' => 'All Course Fetch Successfully',
+                'message' => 'All Course Fetch for particaular Category Successfully',
                 'courses' => $courses
             ]);
         } catch (Exception $e) {
@@ -116,5 +117,9 @@ class CourseController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function a()
+    {
     }
 }
