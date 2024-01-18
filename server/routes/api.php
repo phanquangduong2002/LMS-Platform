@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DocController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\ReviewController;
@@ -149,9 +150,5 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'course'
 ], function ($router) {
-    Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
-    Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
-    Route::post('/', [CourseCategoryController::class, 'postCourseCategory'])->middleware('roles');
-    Route::put('/{id}', [CourseCategoryController::class, 'editACourseCat'])->middleware('roles');
-    Route::delete('/{id}', [CourseCategoryController::class, 'deleteACourseCat'])->middleware('roles');
+    Route::post('/', [CourseController::class, 'createCourse'])->middleware('roles');
 });

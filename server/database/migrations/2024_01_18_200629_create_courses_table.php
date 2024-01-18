@@ -22,8 +22,8 @@ return new class extends Migration
             $table->boolean('published')->default(false);
             $table->boolean('paid')->default(false);
             $table->foreignId('instructor')->constrained('users');
-            $table->double('totalHours');
-            $table->string('enrolls');
+            $table->double('totalHours')->default(0);
+            $table->integer('enrolls')->default(0);
             $table->double('totalRatings')->default(0);
             $table->timestamps();
         });

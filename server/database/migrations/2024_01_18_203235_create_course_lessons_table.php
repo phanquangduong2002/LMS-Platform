@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('content');
             $table->string('video');
+            $table->integer('video_duration');
             $table->boolean('free_preview')->default(false);
             $table->timestamps();
         });

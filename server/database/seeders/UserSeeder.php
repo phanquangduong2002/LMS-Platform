@@ -29,6 +29,14 @@ class UserSeeder extends Seeder
                 "name" => "Bạch Dương",
                 "email" => "bachduong@gmail.com",
                 "password" => Hash::make("12345"),
+                "roles" => "instructor",
+            ],
+            [
+                "username" => "quangduong",
+                "user_image" => "avatar.img",
+                "name" => "Quang Dương",
+                "email" => "quangduong@gmail.com",
+                "password" => Hash::make("12345"),
                 "roles" => "user",
             ]
         ]);
