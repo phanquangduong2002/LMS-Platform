@@ -7,6 +7,7 @@ use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\DocController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\ReviewController;
@@ -159,4 +160,11 @@ Route::group([
     Route::put('/{id}', [CourseController::class, 'updateCourse']);
     Route::put('/published/{id}', [CourseController::class, 'publishedCourse']);
     Route::put('/unpublished/{id}', [CourseController::class, 'unpublishedCourse']);
+
+    Route::group(['prefix' => 'lesson'], function ($router) {
+        Route::post('/', [CourseLessonController::class, 'createLesson'])->middleware('roles');
+    });
+
+    Route::group(['prefix' => 'rating'], function ($router) {
+    });
 });
