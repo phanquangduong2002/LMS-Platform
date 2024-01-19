@@ -16,6 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\VideoController;
 use App\Models\CourseCategory;
+use App\Models\CourseLesson;
 
 /*
 |--------------------------------------------------------------------------
@@ -161,8 +162,9 @@ Route::group([
     Route::put('/published/{id}', [CourseController::class, 'publishedCourse']);
     Route::put('/unpublished/{id}', [CourseController::class, 'unpublishedCourse']);
 
-    Route::group(['prefix' => 'lesson'], function ($router) {
+    Route::group(['prefix' => '{courseId}/lesson'], function ($router) {
         Route::post('/', [CourseLessonController::class, 'createLesson'])->middleware('roles');
+        Route::delete('/{lessonId}', [CourseLessonController::class, 'deleteALesson'])->middleware('roles');
     });
 
     Route::group(['prefix' => 'rating'], function ($router) {

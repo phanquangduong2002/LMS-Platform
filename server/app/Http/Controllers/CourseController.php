@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\CourseLesson;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -220,6 +221,11 @@ class CourseController extends Controller
                 'success' => false,
                 'message' => 'Course not found'
             ], 404);
+
+            $lessons = CourseLesson::where('course_id', $id)->get();
+            foreach ($lessons as $lesson) {
+                $lesson->delete();
+            }
 
             $course->delete();
 
