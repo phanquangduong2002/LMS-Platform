@@ -14,6 +14,7 @@ use App\Http\Controllers\TutCategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\VideoController;
+use App\Models\CourseCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +57,7 @@ Route::group([
 
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'tutorial/category'
+    'prefix' => 'category/tutorial'
 ], function ($router) {
     Route::get('/', [TutCategoryController::class, 'getAllTutCategories']);
     Route::get('/{id}', [TutCategoryController::class, 'getATutCat'])->middleware('admin');
@@ -115,7 +116,7 @@ Route::group([
 
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'blog/category'
+    'prefix' => 'category/blog'
 ], function ($router) {
     Route::get('/', [BlogCategoryController::class, 'getAllBlogCategories']);
     Route::get('/{id}', [BlogCategoryController::class, 'getABlogCat'])->middleware('admin');
@@ -137,7 +138,7 @@ Route::group([
 
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'course/category'
+    'prefix' => 'category/course'
 ], function ($router) {
     Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
     Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
@@ -150,7 +151,12 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'course'
 ], function ($router) {
-    Route::get('/{courseCatId}', [CourseController::class, 'getAllCourses']);
+    Route::get('/', [CourseController::class, 'getAllCourses']);
     Route::post('/', [CourseController::class, 'createCourse'])->middleware('roles');
-    Route::get('/{courseCatId}/{slug}', [CourseController::class, 'getACourse']);
+    Route::get('/category/{courseCatId}', [CourseController::class, 'getAllCoursesByCategory']);
+    Route::get('/instructor/{constructorId}', [CourseController::class, 'getParticularInstructorCourses']);
+    Route::get('/{slug}', [CourseController::class, 'getACourse']);
+    Route::put('/{id}', [CourseController::class, 'updateCourse']);
+    Route::put('/published/{id}', [CourseController::class, 'publishedCourse']);
+    Route::put('/unpublished/{id}', [CourseController::class, 'unpublishedCourse']);
 });

@@ -12,7 +12,7 @@ class CourseController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['getAllCourses', 'getACourse']]);
+        $this->middleware('auth:api', ['except' => ['getAllCourses', 'getAllCoursesByCategory', 'getACourse', 'getParticularInstructorCourses']]);
     }
 
     public function createCourse(Request $request)
@@ -63,7 +63,27 @@ class CourseController extends Controller
         }
     }
 
-    public function getAllCourses($courseCatId)
+    public function getAllCourses()
+    {
+        try {
+            $courses = Course::join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
+                ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
+                ->paginate();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All Course Fetch Successfully',
+                'courses' => $courses
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getAllCoursesByCategory($courseCatId)
     {
         try {
             $courses = Course::where('courses.course_category_id', $courseCatId)
@@ -84,11 +104,10 @@ class CourseController extends Controller
         }
     }
 
-    public function getACourse($courseCatId, $slug)
+    public function getACourse($slug)
     {
         try {
             $course = Course::where('courses.slug', $slug)
-                ->where('courses.course_category_id', $courseCatId)
                 ->join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
                 ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
                 ->first();
@@ -99,17 +118,10 @@ class CourseController extends Controller
                     'message' => 'Course not found'
                 ], 404);
 
-            $courseTopics = Course::where('courses.course_category_id', $courseCatId)
-                ->join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
-                ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
-                ->orderBy('courses.created_at')
-                ->get();
-
             return response()->json([
                 'success' => true,
                 'message' => 'Course found successfully',
                 'course' => $course,
-                'courseTopics' => $courseTopics
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -119,7 +131,159 @@ class CourseController extends Controller
         }
     }
 
-    public function a()
+    public function getParticularInstructorCourses($constructorId)
     {
+        try {
+            $courses = Course::where('courses.instructor', $constructorId)
+                ->join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
+                ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
+                ->paginate();
+
+            if (count($courses) == 0)
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Courses by instructor id ' . $constructorId . ' not found'
+                ], 404);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course found successfully',
+                'course' => $courses,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateCourse(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+                'image' => 'nullable',
+                'course_category_id' => 'required|numeric',
+                'paid' => 'nullable',
+            ]);
+
+            $course = Course::find($id);
+
+            if (!$course) return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+
+            if ($request->hasFile('image')) {
+                $image_url = $course->image;
+                $filename = pathinfo($image_url)['filename'];
+                $public_id = 'lms-cdn-images/' . $filename;
+
+                cloudinary()->destroy($public_id);
+
+                $image_url = cloudinary()->upload($request->file('image')->getRealPath(), [
+                    'folder' => 'lms-cdn-images',
+                ])->getSecurePath();
+
+                $course->image = $image_url;
+            }
+            $course->title = $request['title'];
+            $course->description = $request['description'];
+            $course->price = $request['price'];
+            $course->course_category_id = $request['course_category_id'];
+
+            if ($request->has('paid')) $course->paid = $request['paid'];
+
+            $course->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course updated Successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteCourse($id)
+    {
+        try {
+            $course = Course::find($id);
+
+            if (!$course) return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+
+            $course->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course deleted Successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function publishedCourse($id)
+    {
+        try {
+            $course = Course::find($id);
+
+            if (!$course) return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+
+            $course->published = true;
+
+            $course->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course published Successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function unpublishedCourse($id)
+    {
+        try {
+            $course = Course::find($id);
+
+            if (!$course) return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+
+            $course->published = false;
+
+            $course->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course unpublished Successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

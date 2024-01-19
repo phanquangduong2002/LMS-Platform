@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\CourseCategory;
 use Exception;
 use Illuminate\Http\Request;
@@ -114,11 +115,10 @@ class CourseCategoryController extends Controller
                 'message' => 'Course Category Not Found'
             ], 404);
 
-            // $logsToDelete = Blog::where('blog_category_id', $id)->get();
-            // foreach ($logsToDelete as $blog) {
-            //     $blog->keywords()->delete();
-            //     $blog->delete();
-            // }
+            $coursesToDelete = Course::where('course_category_id', $id)->get();
+            foreach ($coursesToDelete as $course) {
+                $course->delete();
+            }
 
             $courseCategory->delete();
 
