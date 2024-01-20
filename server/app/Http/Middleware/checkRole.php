@@ -20,7 +20,7 @@ class checkRole
         else return response()->json(['error' => 'You are not an admin or an instructor.'], 403);
     }
 
-    private function checkRole()
+    protected function checkRole()
     {
         return Auth::check() && (Auth::user()->roles == 'admin' || Auth::user()->roles == 'instructor');
     }

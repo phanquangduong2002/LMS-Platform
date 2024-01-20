@@ -30,11 +30,10 @@ use App\Http\Controllers\VideoController;
 
 
 Route::group([
-    'middleware' => 'throttle:api_rate_limit'
+    'middleware' => ['api_key', 'api'] // throttle:api_rate_limit
 ], function () {
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'auth'
     ], function ($router) {
         Route::post('/login', [AuthController::class, 'login']);
@@ -47,7 +46,6 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'user'
     ], function ($router) {
         Route::get('', [UserController::class, 'getAllUser'])->middleware('admin');
@@ -61,18 +59,36 @@ Route::group([
 
 
     Route::group([
-        'middleware' => 'api',
-        'prefix' => 'category/tutorial'
+        'prefix' => 'category'
     ], function ($router) {
-        Route::get('/', [TutCategoryController::class, 'getAllTutCategories']);
-        Route::get('/{id}', [TutCategoryController::class, 'getATutCat'])->middleware('admin');
-        Route::post('/', [TutCategoryController::class, 'postTutorialCategory'])->middleware('admin');
-        Route::put('/{id}', [TutCategoryController::class, 'editATutCat'])->middleware('admin');
-        Route::delete('/{id}', [TutCategoryController::class, 'deleteATutCat'])->middleware('admin');
+
+        Route::group(['prefix' => 'tutorial'], function ($router) {
+            Route::get('/', [TutCategoryController::class, 'getAllTutCategories']);
+            Route::get('/{id}', [TutCategoryController::class, 'getATutCat'])->middleware('admin');
+            Route::post('/', [TutCategoryController::class, 'postTutorialCategory'])->middleware('admin');
+            Route::put('/{id}', [TutCategoryController::class, 'editATutCat'])->middleware('admin');
+            Route::delete('/{id}', [TutCategoryController::class, 'deleteATutCat'])->middleware('admin');
+        });
+
+        Route::group(['prefix' => 'course'], function ($router) {
+            Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
+            Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
+            Route::post('/', [CourseCategoryController::class, 'postCourseCategory'])->middleware('roles');
+            Route::put('/{id}', [CourseCategoryController::class, 'editACourseCat'])->middleware('roles');
+            Route::delete('/{id}', [CourseCategoryController::class, 'deleteACourseCat'])->middleware('roles');
+        });
+
+        Route::group(['prefix' => 'blog'], function ($router) {
+            Route::get('/', [BlogCategoryController::class, 'getAllBlogCategories']);
+            Route::get('/{id}', [BlogCategoryController::class, 'getABlogCat'])->middleware('admin');
+            Route::post('/', [BlogCategoryController::class, 'postBlogCategory'])->middleware('admin');
+            Route::put('/{id}', [BlogCategoryController::class, 'editABlogCat'])->middleware('admin');
+            Route::delete('/{id}', [BlogCategoryController::class, 'deleteABlogCat'])->middleware('admin');
+        });
     });
 
+
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'tutorial'
     ], function ($router) {
         Route::get('/', [TutorialController::class, 'getAllTutorial']);
@@ -83,7 +99,6 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'newsletter'
     ], function ($router) {
         Route::post('/', [NewsLetterController::class, 'subscribe']);
@@ -91,7 +106,6 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'review'
     ], function ($router) {
         Route::get('/', [ReviewController::class, 'getAllReview']);
@@ -102,7 +116,6 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'video'
     ], function ($router) {
         Route::get('/', [VideoController::class, 'getAllVideos']);
@@ -113,25 +126,13 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'document'
     ], function ($router) {
         Route::post('/', [DocController::class, 'postDocument'])->middleware('admin');
     });
 
-    Route::group([
-        'middleware' => 'api',
-        'prefix' => 'category/blog'
-    ], function ($router) {
-        Route::get('/', [BlogCategoryController::class, 'getAllBlogCategories']);
-        Route::get('/{id}', [BlogCategoryController::class, 'getABlogCat'])->middleware('admin');
-        Route::post('/', [BlogCategoryController::class, 'postBlogCategory'])->middleware('admin');
-        Route::put('/{id}', [BlogCategoryController::class, 'editABlogCat'])->middleware('admin');
-        Route::delete('/{id}', [BlogCategoryController::class, 'deleteABlogCat'])->middleware('admin');
-    });
 
     Route::group([
-        'middleware' => 'api',
         'prefix' => 'blog'
     ], function ($router) {
         Route::get('/', [BlogController::class, 'getAllBlog']);
@@ -142,18 +143,6 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => 'api',
-        'prefix' => 'category/course'
-    ], function ($router) {
-        Route::get('/', [CourseCategoryController::class, 'getAllCourseCategories']);
-        Route::get('/{id}', [CourseCategoryController::class, 'getACourseCat'])->middleware('roles');
-        Route::post('/', [CourseCategoryController::class, 'postCourseCategory'])->middleware('roles');
-        Route::put('/{id}', [CourseCategoryController::class, 'editACourseCat'])->middleware('roles');
-        Route::delete('/{id}', [CourseCategoryController::class, 'deleteACourseCat'])->middleware('roles');
-    });
-
-    Route::group([
-        'middleware' => 'api',
         'prefix' => 'course'
     ], function ($router) {
         Route::get('/', [CourseController::class, 'getAllCourses']);
