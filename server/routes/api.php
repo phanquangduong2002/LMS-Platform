@@ -153,6 +153,7 @@ Route::group([
         Route::put('/{id}', [CourseController::class, 'updateCourse']);
         Route::put('/published/{id}', [CourseController::class, 'publishedCourse']);
         Route::put('/unpublished/{id}', [CourseController::class, 'unpublishedCourse']);
+        Route::post('/free-enrollment/{courseId}', [CourseController::class, 'freeEnrollment']);
 
         Route::group(['prefix' => '{courseId}/lesson'], function ($router) {
             Route::post('/', [CourseLessonController::class, 'createLesson'])->middleware('roles');

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\CourseLesson;
+use App\Models\UserCourse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Backtrace\Arguments\ReducedArgument\TruncatedReducedArgument;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class CourseController extends Controller
 {
@@ -284,6 +286,50 @@ class CourseController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Course unpublished Successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function freeEnrollment(Request $request, $courseId)
+    {
+        try {
+            $course = Course::find($courseId);
+
+            if (!$course) return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+
+            if ($course->paid) return response()->json([
+                'success' => false,
+                'message' => 'This course is a paid course'
+            ]);
+
+            $findUserCourse = UserCourse::where('user_id', Auth::user()->id)
+                ->where('course_id', $courseId)->first();
+
+            if ($findUserCourse)
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have previously added this course'
+                ]);
+
+            $userCourse = new UserCourse();
+
+            $userCourse->user_id = Auth::user()->id;
+
+            $userCourse->course_id = $courseId;
+
+            $userCourse->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course Added'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
