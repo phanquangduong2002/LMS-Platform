@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Prettier configuration file
+# Ignore Prettier configuration file
 .prettierrc

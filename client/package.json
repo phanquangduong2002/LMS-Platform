@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.6.3",
+    "axios": "^1.6.5",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11",
@@ -18,6 +18,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
     "autoprefixer": "^10.4.17",
+    "daisyui": "^4.6.0",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "vite": "^5.0.8"
