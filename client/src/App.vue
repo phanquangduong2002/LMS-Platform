@@ -1,12 +1,18 @@
 <template>
   <div>
-    <div class="flex items-center justify-center">Nền tảng học trực tuyến</div>
+    <Header />
     <router-view></router-view>
+    <Footer />
   </div>
 </template>
 
 <script>
-export default {}
+import Footer from './components/Footer/Footer.vue'
+import Header from './components/Header/Header.vue'
+
+export default {
+  components: { Header, Footer }
+}
 </script>
 
 <style></style>
