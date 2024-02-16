@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-transparent max-w-[1280px] mx-auto">
     <Header />
     <router-view></router-view>
     <Footer />

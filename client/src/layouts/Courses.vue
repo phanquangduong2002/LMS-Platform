@@ -1,5 +1,7 @@
 <template>
-  <div>Sign In Page</div>
+  <div class="p-10">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>

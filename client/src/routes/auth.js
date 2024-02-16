@@ -5,14 +5,19 @@ const auth = [
     component: () => import('../layouts/Auth.vue'),
     children: [
       {
-        path: 'signin',
-        name: 'auth-signin',
-        component: () => import('../pages/Auth/SignIn.vue')
+        path: 'login',
+        name: 'auth-login',
+        component: () => import('../pages/Auth/Login.vue')
       },
       {
         path: 'register',
         name: 'auth-register',
         component: () => import('../pages/Auth/Register.vue')
+      },
+      {
+        path: 'forgot-password',
+        name: 'auth-forgot-password',
+        component: () => import('../pages/Auth/ForgotPassword.vue')
       }
     ]
   }
