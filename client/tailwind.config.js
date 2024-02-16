@@ -11,9 +11,7 @@ export default {
 
       backgroundImage: {
         primary: '#2f57ef',
-        gradient: 'linear-gradient(to right, #2f57ef, #b966e7)',
-        'hover-gradient': 'linear-gradient(to right, #b966e7, #2f57ef)',
-        'offer-badge': "url('../../assets/images/offer-badge-bg-color.svg')"
+        gradient: 'linear-gradient(to right, #2f57ef, #b966e7)'
       },
       borderColor: {
         primary: '#2f57ef',
