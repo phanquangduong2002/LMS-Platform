@@ -1,6 +1,6 @@
 <template>
   <div class="pb-20">
-    <div class="pt-[60px] pb-[240px] relative overflow-hidden">
+    <div class="pt-[60px] pb-[200px] md:pb-[240px] relative overflow-hidden">
       <div
         class="absolute top-0 right-0 bottom-0 left-0 -z-[4] bg-banner after:absolute after:content after:top-0 after:left-0 after:w-full after:h-full -after:z-[1] after:bg-blur"
       ></div>
@@ -30,13 +30,15 @@
             class="h-[50px] flex items-center justify-center px-5 text-sm text-heading font-medium gap-1 bg-[rgba(226,213,252,.8)] rounded-full border border-white hover:text-primary transiton-all duration-[400ms]"
           >
             <span class="mr-[6px]">🎉</span>
-            <span>12</span> Courses
+            <span>{{ totalCourse }}</span> Courses
           </router-link>
         </div>
         <p class="text-heading text-lg">
           Courses that help beginner designers become true unicorns.
         </p>
-        <div class="w-full mt-7 flex items-center justify-between">
+        <div
+          class="w-full mt-7 flex flex-col md:flex-row items-start md:items-start justify-between gap-6"
+        >
           <div class="flex items-center justify-center gap-5">
             <div
               class="flex items-center justify-center p-2 rounded-full bg-white-opacity"
@@ -84,10 +86,15 @@
               </button>
             </div>
             <div class="text-heading">
-              Showing 1-6 of <span>12</span> results
+              Showing 1-<span>{{
+                totalCourse > perPage ? perPage : totalCourse
+              }}</span>
+              of <span>{{ totalCourse }}</span> results
             </div>
           </div>
-          <div>
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-5"
+          >
             <form class="relative">
               <input
                 type="text"
@@ -123,6 +130,26 @@
                 </svg>
               </button>
             </form>
+
+            <button
+              class="h-[50px] flex items-center justify-center gap-[6px] px-6 text-heading font-medium bg-white rounded-full hover:bg-primary hover:text-white transition-all duration-[500ms]"
+            >
+              Filter
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18px"
+                height="18px"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M2.73224 5.32873C1.58574 4.03892 2.50136 2 4.22706 2H19.7734C21.4991 2 22.4147 4.03893 21.2682 5.32873L15.0002 12.3802V21C15.0002 21.3466 14.8208 21.6684 14.5259 21.8507C14.2311 22.0329 13.863 22.0494 13.553 21.8944L9.553 19.8944C9.21421 19.725 9.00021 19.3788 9.00021 19V12.3802L2.73224 5.32873ZM19.7734 4H4.22706L10.7476 11.3356C10.9103 11.5187 11.0002 11.7551 11.0002 12V18.382L13.0002 19.382V12C13.0002 11.7551 13.0901 11.5187 13.2528 11.3356L19.7734 4Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -147,6 +174,8 @@ export default {
   components: { CourseCard },
   setup() {
     const courses = ref([])
+    const totalCourse = ref(0)
+    const perPage = ref(0)
     const type = ref('grid')
 
     const getCourses = async () => {
@@ -156,15 +185,21 @@ export default {
         }
       })
 
-      courses.value = res.data.courses.data
+      if (res.data.success) {
+        courses.value = res.data.courses.data
+        totalCourse.value = res.data.courses.total
+        perPage.value = res.data.courses.per_page
+      }
 
-      console.log(res.data.courses.data)
+      console.log(res.data)
     }
 
     getCourses()
 
     return {
       courses,
+      totalCourse,
+      perPage,
       type
     }
   }
