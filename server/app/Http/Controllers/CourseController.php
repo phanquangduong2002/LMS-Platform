@@ -70,7 +70,8 @@ class CourseController extends Controller
     {
         try {
             $courses = Course::join('course_categories', 'courses.course_category_id', '=', 'course_categories.id')
-                ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug')
+                ->join('users', 'courses.instructor', '=', 'users.id')
+                ->select('courses.*', 'course_categories.title as course_category_title', 'course_categories.slug as course_category_slug', 'users.name as instructor_name', 'users.user_image as instructor_image')
                 ->paginate();
 
             return response()->json([

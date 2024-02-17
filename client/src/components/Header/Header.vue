@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar p-3 font-medium border-b border-seperate">
+  <div class="navbar p-3 font-medium shadow-sm">
     <div class="navbar-start">
       <div class="dropdown">
         <div
@@ -78,10 +78,10 @@
         >
           <router-link :to="{ name: 'home' }" class="">Home</router-link>
         </li>
-        <li
-          class="relative px-2 cursor-pointer group hover:text-primary after:absolute after:content after:-bottom-[20px] after:left-0 after:w-full after:h-[32px] after:bg-transparent"
-        >
-          <router-link :to="{ name: 'course-list' }"
+        <li class="relative px-2 cursor-pointer group hover:text-primary">
+          <router-link
+            :to="{ name: 'course-list' }"
+            class="block w-full relative after:absolute after:content after:-bottom-[20px] after:left-0 after:w-full after:h-[32px] after:bg-transparent"
             >Courses
             <svg
               xmlns="http://www.w3.org/2000/svg"
