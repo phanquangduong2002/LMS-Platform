@@ -35,7 +35,7 @@
       {{ meta.current_page }}
     </button>
     <button
-      class="w-10 h-10 bg-white shadow rounded-md hover:text-white hover:bg-primary transition-all duration-[400ms] btn-disabled"
+      class="w-10 h-10 bg-white shadow rounded-md hover:text-white hover:bg-primary transition-all duration-[400ms]"
       :class="{ hidden: meta.current_page >= meta.last_page - 1 }"
       @click="$emit('getData', links.next_page_url)"
     >
