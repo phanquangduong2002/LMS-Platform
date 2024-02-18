@@ -8,6 +8,7 @@ const courses = [
         path: '',
         name: 'course-list',
         component: () => import('../pages/Courses/Courses.vue')
+        // props: route => ({ page: route.query.page || 1 })
       },
       {
         path: ':id',
