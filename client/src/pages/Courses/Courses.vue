@@ -85,11 +85,14 @@
                 List
               </button>
             </div>
-            <div class="text-heading">
-              Showing 1-<span>{{
-                totalCourse > perPage ? perPage : totalCourse
-              }}</span>
-              of <span>{{ totalCourse }}</span> results
+            <div class="flex items-center justify-center gap-1 text-heading">
+              <p :class="{ hidden: totalCourse === 0 }">
+                Showing 1-<span>{{
+                  totalCourse > perPage ? perPage : totalCourse
+                }}</span>
+                of
+              </p>
+              <span>{{ totalCourse }}</span> results
             </div>
           </div>
           <div
@@ -164,11 +167,7 @@
       </div>
     </div>
     <div class="w-full flex items-center justify-center mt-14">
-      <Pagination
-        :meta="meta"
-        :links="links"
-        @getCourses="handlePaginationClick"
-      />
+      <Pagination :meta="meta" :links="links" @getData="getCourses" />
     </div>
   </div>
 </template>
@@ -199,8 +198,22 @@ export default defineComponent({
 
     const type = ref('grid')
 
-    const getCourses = async url => {
-      url = url || `${api}/course`
+    return {
+      courses,
+      totalCourse,
+      perPage,
+      meta,
+      links,
+      type
+    }
+  },
+  methods: {
+    getUrlQueryParam() {
+      return this.$route.query.page
+        ? `${api}/course?page=${this.$route.query.page}`
+        : `${api}/course`
+    },
+    async getCourses(url) {
       const res = await axios.get(`${url}`, {
         headers: {
           'x-api-key': apiKey
@@ -208,44 +221,34 @@ export default defineComponent({
       })
 
       if (res.data.success) {
-        courses.value = res.data.courses.data
-        totalCourse.value = res.data.courses.total
-        perPage.value = res.data.courses.per_page
+        this.courses = res.data.courses.data
 
-        meta.value.current_page = res.data.courses.current_page
-        meta.value.last_page = res.data.courses.last_page
+        if (res.data.courses.data.length > 0) {
+          this.totalCourse = res.data.courses.total
+          this.perPage = res.data.courses.per_page
 
-        links.value.first_page_url = res.data.courses.first_page_url
-        links.value.last_page_url = res.data.courses.last_page_url
-        links.value.prev_page_url = res.data.courses.prev_page_url
-        links.value.next_page_url = res.data.courses.next_page_url
+          this.meta.current_page = res.data.courses.current_page
+          this.meta.last_page = res.data.courses.last_page
+
+          this.links.first_page_url = res.data.courses.first_page_url
+          this.links.last_page_url = res.data.courses.last_page_url
+          this.links.prev_page_url = res.data.courses.prev_page_url
+          this.links.next_page_url = res.data.courses.next_page_url
+        }
+
+        url = new URL(url)
+        const searchParams = new URLSearchParams(url.search)
+        const page = searchParams.get('page')
+
+        this.$router.push({ name: 'course-list', query: { page: page || 1 } })
+
+        window.scrollTo({ top: 0 })
       }
     }
-
-    getCourses()
-
-    return {
-      courses,
-      totalCourse,
-      perPage,
-      meta,
-      links,
-      type,
-      getCourses
-    }
   },
-  methods: {
-    async handlePaginationClick(url) {
-      await this.getCourses(url)
-
-      url = new URL(url)
-      const searchParams = new URLSearchParams(url.search)
-      const page = searchParams.get('page')
-
-      this.$router.push({ name: 'course-list', query: { page: page } })
-
-      window.scrollTo({ top: 0 })
-    }
+  mounted() {
+    const url = this.getUrlQueryParam()
+    this.getCourses(url)
   }
 })
 </script>
