@@ -1,10 +1,10 @@
 <template>
   <div
-    class="p-6 shadow-lg rounded-box hover:scale-[1.02] transition-all duration-[450ms] bg-white"
+    class="p-6 mb-4 shadow-lg rounded-box hover:scale-[1.02] transition-all duration-[450ms] bg-white"
   >
     <div>
       <div class="relative">
-        <router-link :to="{ name: 'course-detail', params: { id: 1 } }">
+        <router-link :to="{ name: 'course-detail', params: { id: course.id } }">
           <img
             src="../../assets/images/course-01.webp"
             alt="Course thumb"
@@ -39,9 +39,12 @@
           <img src="../../assets/icons/bookmark.svg" alt="Bookmark" />
         </button>
       </div>
-      <h3 class="text-2xl font-bold mt-2">
+      <router-link
+        :to="{ name: 'course-detail', params: { id: course.id } }"
+        class="text-2xl font-bold mt-2 text-heading hover:text-primary transition-all duration-[600ms]"
+      >
         {{ course.title }}
-      </h3>
+      </router-link>
       <ul class="mt-3 flex items-center justify-start gap-3 text-body text-sm">
         <li class="flex items-center justify-center gap-1">
           <span>
@@ -93,7 +96,7 @@
           >
         </div>
         <router-link
-          :to="{ name: 'course-detail', params: { id: 1 } }"
+          :to="{ name: 'course-detail', params: { id: course.id } }"
           class="flex items-center justify-center gap-2 text-heading text-sm font-medium"
           >Learn More <img src="../../assets/icons/right.svg" alt="Learn more"
         /></router-link>

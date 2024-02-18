@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-20">
+  <div class="pb-24">
     <div class="pt-[60px] pb-[200px] md:pb-[240px] relative overflow-hidden">
       <div
         class="absolute top-0 right-0 bottom-0 left-0 -z-[4] bg-banner after:absolute after:content after:top-0 after:left-0 after:w-full after:h-full -after:z-[1] after:bg-blur"
@@ -163,23 +163,45 @@
         </div>
       </div>
     </div>
+    <div class="w-full flex items-center justify-center mt-14">
+      <Pagination
+        :meta="meta"
+        :links="links"
+        @getCourses="handlePaginationClick"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import CourseCard from '../../components/Course/CourseCard.vue'
 import { defineComponent, ref, toRefs, reactive } from 'vue'
 import { api, apiKey } from '../../api/constants'
-export default {
-  components: { CourseCard },
+import CourseCard from '../../components/Course/CourseCard.vue'
+import Pagination from '../../components/Pagination/Pagination.vue'
+export default defineComponent({
+  components: { CourseCard, Pagination },
   setup() {
     const courses = ref([])
     const totalCourse = ref(0)
     const perPage = ref(0)
+
+    const meta = ref({
+      current_page: 0,
+      last_page: 0
+    })
+
+    const links = ref({
+      first_page_url: '',
+      last_page_url: '',
+      prev_page_url: '',
+      next_page_url: ''
+    })
+
     const type = ref('grid')
 
-    const getCourses = async () => {
-      const res = await axios.get(`${api}/course`, {
+    const getCourses = async url => {
+      url = url || `${api}/course`
+      const res = await axios.get(`${url}`, {
         headers: {
           'x-api-key': apiKey
         }
@@ -189,9 +211,15 @@ export default {
         courses.value = res.data.courses.data
         totalCourse.value = res.data.courses.total
         perPage.value = res.data.courses.per_page
-      }
 
-      console.log(res.data)
+        meta.value.current_page = res.data.courses.current_page
+        meta.value.last_page = res.data.courses.last_page
+
+        links.value.first_page_url = res.data.courses.first_page_url
+        links.value.last_page_url = res.data.courses.last_page_url
+        links.value.prev_page_url = res.data.courses.prev_page_url
+        links.value.next_page_url = res.data.courses.next_page_url
+      }
     }
 
     getCourses()
@@ -200,10 +228,26 @@ export default {
       courses,
       totalCourse,
       perPage,
-      type
+      meta,
+      links,
+      type,
+      getCourses
+    }
+  },
+  methods: {
+    async handlePaginationClick(url) {
+      await this.getCourses(url)
+
+      url = new URL(url)
+      const searchParams = new URLSearchParams(url.search)
+      const page = searchParams.get('page')
+
+      this.$router.push({ name: 'course-list', query: { page: page } })
+
+      window.scrollTo({ top: 0 })
     }
   }
-}
+})
 </script>
 
 <style></style>
