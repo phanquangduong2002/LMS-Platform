@@ -4,7 +4,9 @@
   >
     <div>
       <div class="relative">
-        <router-link :to="{ name: 'course-detail', params: { id: course.id } }">
+        <router-link
+          :to="{ name: 'course-detail', params: { slug: course.slug } }"
+        >
           <img
             src="../../assets/images/course-01.webp"
             alt="Course thumb"
@@ -40,7 +42,7 @@
         </button>
       </div>
       <router-link
-        :to="{ name: 'course-detail', params: { id: course.id } }"
+        :to="{ name: 'course-detail', params: { slug: course.slug } }"
         class="text-2xl font-bold mt-2 text-heading hover:text-primary transition-all duration-[600ms]"
       >
         {{ course.title }}
@@ -96,7 +98,7 @@
           >
         </div>
         <router-link
-          :to="{ name: 'course-detail', params: { id: course.id } }"
+          :to="{ name: 'course-detail', params: { slug: course.slug } }"
           class="flex items-center justify-center gap-2 text-heading text-sm font-medium"
           >Learn More <img src="../../assets/icons/right.svg" alt="Learn more"
         /></router-link>

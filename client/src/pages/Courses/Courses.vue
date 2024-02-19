@@ -7,7 +7,9 @@
       <div
         class="px-8 md:px-16 lg:px-20 flex flex-col items-start justify-center"
       >
-        <div class="text-sm text-body flex items-center justify-center gap-1">
+        <div
+          class="text-sm text-body flex items-center justify-center gap-1 mb-5"
+        >
           <span>
             <router-link
               :to="{ name: 'home' }"
@@ -21,7 +23,7 @@
           <span class="opacity-60">All Courses</span>
         </div>
 
-        <div class="my-5 flex item-center justify-center gap-5">
+        <div class="mb-5 flex item-center justify-center gap-5">
           <h3 class="text-[42px] font-bold text-heading leading-[2.9rem]">
             All Courses
           </h3>
@@ -223,6 +225,8 @@ export default defineComponent({
       if (res.data.success) {
         this.courses = res.data.courses.data
 
+        console.log(res.data.courses.data)
+
         if (res.data.courses.data.length > 0) {
           this.totalCourse = res.data.courses.total
           this.perPage = res.data.courses.per_page
@@ -241,12 +245,11 @@ export default defineComponent({
         const page = searchParams.get('page')
 
         this.$router.push({ name: 'course-list', query: { page: page || 1 } })
-
-        window.scrollTo({ top: 0 })
       }
     }
   },
   mounted() {
+    window.scrollTo({ top: 0 })
     const url = this.getUrlQueryParam()
     this.getCourses(url)
   }

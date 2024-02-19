@@ -12,13 +12,15 @@ export default {
       },
       backgroundColor: {
         'white-opacity': '#ffffff21',
-        'gray-light': '#f6f6f6'
+        'gray-light': '#f6f6f6',
+        'primary-opacity': '#2f57ef21'
       },
       backgroundImage: {
         primary: '#2f57ef',
         gradient: 'linear-gradient(to right, #2f57ef, #b966e7)',
         banner: 'linear-gradient(270deg,#b966e7 0%,#2f57ef 100%)',
-        blur: 'linear-gradient(#fff,hsla(0,0%,100%,.1))'
+        blur: 'linear-gradient(#fff,hsla(0,0%,100%,.3))',
+        'gradient-border': 'linear-gradient(-145deg,#cfa2e8,#637fea)'
       },
       borderColor: {
         primary: '#2f57ef',
